@@ -1,0 +1,42 @@
+[filter "media"]
+	required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+[user]
+	name = Joseph Southan
+	email = joseph@southanuk.co.uk
+	signingkey = DD0B4FA93EA335F9
+[core]
+	editor = nano
+[filter "hawser"]
+	clean = git hawser clean %f
+	smudge = git hawser smudge %f
+	required = true
+[alias]
+	s = status
+	soft = reset --soft HEAD~1
+	hard = reset --hard HEAD~1
+	fuck = reset --hard
+	br = branch -b
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+[color]
+	ui = auto
+[help]
+	autocorrect = 1
+[credential]
+	helper = osxkeychain
+[filter "lfs"]
+	clean = git lfs clean %f
+	smudge = git lfs smudge %f
+	required = true
+[commit]
+	gpgsign = true
+[difftool]
+	prompt = false
+[mergetool]
+	prompt = false
+[rerere]
+	enabled = true
+	autoupdate = true
+[fetch]
+	prune = true

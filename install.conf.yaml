@@ -1,0 +1,31 @@
+- clean: ['~']
+
+- link:
+    ~/.bash_profile: bash_profile
+    ~/.gitconfig: gitconfig
+    ~/.zprofile: zprofile
+    ~/.zshenv: zshenv
+    ~/.zshrc: zshrc
+
+- brew:
+  - libxml2
+  - redis
+  - cmake
+  - watchman
+  - rbenv
+  - zsh
+  - vim
+  - tmux
+  - git
+
+- cask:
+  - vlc
+  - osxfuse
+  - docker
+  - flux
+  - google-chrome
+
+- shell:
+  - ["git submodule update --init --recursive", 'Updating submodules']
+  - ["curl -o- -L https://yarnpkg.com/install.sh | bash", 'Installing yarn']
+  - ["curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh", 'Installing oh my zsh']
