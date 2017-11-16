@@ -5,7 +5,7 @@
 [user]
 	name = Joseph Southan
 	email = joseph@southanuk.co.uk
-	signingkey = DD0B4FA93EA335F9
+	signingkey = 49EDC150D29C9763
 [core]
 	editor = nano
 [filter "hawser"]
