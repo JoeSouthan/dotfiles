@@ -6,6 +6,7 @@
     ~/.zprofile: zprofile
     ~/.zshenv: zshenv
     ~/.zshrc: zshrc
+    ~/.gemrc: gemrc
 
 - brew:
   - libxml2
