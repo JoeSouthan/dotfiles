@@ -79,11 +79,24 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+function _migrate_rails {
+  if [ -n "`bundle show rails | grep 'rails\-5'`" ]; then
+    runner='bin/rails'
+  else
+    runner='bin/rake'
+  fi
+
+  if [ -e 'db/structure.sql' ]; then
+    $runner db:migrate && $runner db:migrate RAILS_ENV=test
+  else
+    $runner db:migrate && $runner db:schema:load RAILS_ENV=test
+  fi
+}
+
 alias be="bundle exec"
-alias bi="bundle install"
 alias b='bundle'
 alias routes='bin/rake routes'
-alias migrate='bin/rake db:migrate && bin/rake db:schema:load RAILS_ENV=test'
+alias migrate='_migrate_rails'
 alias rollback='bin/rake db:rollback'
 alias gs='git status'
 alias rails='bin/rails'
@@ -93,6 +106,8 @@ alias fuckingrspec='bin/rake db:drop RAILS_ENV=test && bin/rake db:create RAILS_
 alias schemapls='g checkout -- db/schema.rb'
 alias deletemerged='git branch --merged master | grep -v "\master" | xargs -n 1 git branch -d'
 alias tidyup='cat /dev/null > log/test.log && cat /dev/null > log/development.log && cat /dev/null > log/newrelic_agent.log && rm -rf tmp/cache/*'
+alias goodcode='git diff origin/master --name-only | xargs bundle exec rubocop'
+alias wantmaster='git checkout master && git pull origin master'
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
@@ -103,5 +118,8 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 export PATH="$HOME/.yarn/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+. "/usr/local/opt/nvm/nvm.sh"
 
 export PATH="/usr/local/opt/python/libexec/bin:$PATH"
