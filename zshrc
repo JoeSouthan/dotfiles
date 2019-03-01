@@ -108,6 +108,7 @@ alias deletemerged='git branch --merged master | grep -v "\master" | xargs -n 1 
 alias tidyup='cat /dev/null > log/test.log && cat /dev/null > log/development.log && cat /dev/null > log/newrelic_agent.log && rm -rf tmp/cache/*'
 alias goodcode='git diff origin/master --name-only | xargs bundle exec rubocop'
 alias wantmaster='git checkout master && git pull origin master'
+alias empty='find . -type d -empty -delete'
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
