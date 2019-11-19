@@ -1,4 +1,4 @@
-- clean: ['~']
+- clean: ["~"]
 
 - link:
     ~/.bash_profile: bash_profile
@@ -9,24 +9,33 @@
     ~/.gemrc: gemrc
 
 - brew:
-  - libxml2
-  - redis
-  - cmake
-  - watchman
-  - rbenv
-  - zsh
-  - vim
-  - tmux
-  - git
-  - nvm
-  - yarn
+    - libxml2
+    - redis
+    - cmake
+    - watchman
+    - rbenv
+    - zsh
+    - vim
+    - tmux
+    - git
+    - nvm
+    - fzf
+    - fd
+    - yarn
+    - ansible
+    - circleci
+    - heroku
+    - puma-dev
 
 - cask:
-  - vlc
-  - osxfuse
-  - docker
-  - flux
+    - vlc
+    - osxfuse
+    - docker
+    - flux
 
 - shell:
-  - ["git submodule update --init --recursive", 'Updating submodules']
-  - ["curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh", 'Installing oh my zsh']
+    - ["git submodule update --init --recursive", "Updating submodules"]
+    - [
+        "curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh",
+        "Installing oh my zsh",
+      ]
