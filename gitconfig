@@ -8,6 +8,7 @@
 	signingkey = 49EDC150D29C9763
 [core]
 	editor = nano
+	excludesfile = /Users/josephsouthan/.gitignore_global
 [filter "hawser"]
 	clean = git hawser clean %f
 	smudge = git hawser smudge %f
@@ -40,3 +41,5 @@
 	autoupdate = true
 [fetch]
 	prune = true
+[pull]
+	rebase = false

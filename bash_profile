@@ -3,3 +3,5 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 export PATH="$HOME/.yarn/bin:$PATH"
+
+export PATH="$HOME/.cargo/bin:$PATH"

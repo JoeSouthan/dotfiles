@@ -1,3 +1,7 @@
+- defaults:
+    link:
+      relink: true
+
 - clean: ["~"]
 
 - link:
@@ -7,6 +11,8 @@
     ~/.zshenv: zshenv
     ~/.zshrc: zshrc
     ~/.gemrc: gemrc
+    ~/.gitignore_global: gitignore_global
+    ~/.p10k.zsh: p10k.zsh
 
 - brew:
     - libxml2
@@ -25,7 +31,6 @@
     - ansible
     - circleci
     - heroku
-    - puma-dev
 
 - cask:
     - vlc
@@ -38,4 +43,8 @@
     - [
         "curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh",
         "Installing oh my zsh",
+      ]
+    - [
+        "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10",
+        "installing p10k",
       ]
