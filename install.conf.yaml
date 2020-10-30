@@ -5,6 +5,7 @@
 - clean: ["~"]
 
 - link:
+    ~/.bundle/config: bundle_config
     ~/.bash_profile: bash_profile
     ~/.gitconfig: gitconfig
     ~/.zprofile: zprofile

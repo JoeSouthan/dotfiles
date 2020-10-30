@@ -1,0 +1,6 @@
+---
+BUNDLE_GEM__TEST: "rspec"
+BUNDLE_GEM__MIT: "true"
+BUNDLE_GEM__COC: "true"
+BUNDLE_BUILD__NOKOGIRI: "--use-system-libraries"
+BUNDLE_BUILD__LIBXML-RUBY: "--with-xml2-config=/usr/local/opt/libxml2/bin/xml2-config"
