@@ -13,14 +13,13 @@
     ~/.zshrc: zshrc
     ~/.gemrc: gemrc
     ~/.gitignore_global: gitignore_global
-    ~/.p10k.zsh: p10k.zsh
+    ~/.p10k.zsh: .p10k.zsh
 
 - brew:
     - libxml2
     - redis
     - cmake
     - watchman
-    - rbenv
     - zsh
     - vim
     - tmux
@@ -32,6 +31,7 @@
     - ansible
     - circleci
     - heroku
+    - gh
 
 - cask:
     - vlc

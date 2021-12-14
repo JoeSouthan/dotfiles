@@ -50,6 +50,20 @@ source $ZSH/oh-my-zsh.sh
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+autoload -Uz compinit
+
+case $SYSTEM in
+  Darwin)
+    if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+      compinit;
+    else
+      compinit -C;
+    fi
+    ;;
+  Linux)
+    # not yet match GNU & BSD stat
+  ;;
+esac
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -59,34 +73,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-function _migrate_rails {
-  if [ -n "`bundle show rails | grep 'rails\-5'`" ]; then
-    runner='bin/rails'
-  else
-    runner='bin/rake'
-  fi
-
-  if [ -e 'db/structure.sql' ]; then
-    $runner db:migrate && $runner db:migrate RAILS_ENV=test
-  else
-    $runner db:migrate && $runner db:schema:load RAILS_ENV=test
-  fi
-}
-
-alias rspec='nocorrect rspec'
-alias be="bundle exec"
-alias b='bundle'
-alias routes='bin/rake routes'
-alias migrate='_migrate_rails'
-alias rollback='bin/rake db:rollback'
 alias gs='git status'
-alias rails='bin/rails'
-alias rake='bin/rake'
-alias rc='bin/rails c'
-alias fuckingrspec='bin/rake db:drop RAILS_ENV=test && bin/rake db:create RAILS_ENV=test && bin/rake db:schema:load RAILS_ENV=test && spring stop'
-alias schemapls='g checkout -- db/schema.rb'
-alias deletemerged='git branch --merged master | grep -v "\master" | xargs -n 1 git branch -d'
+alias deletemerged='git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d'
 alias tidyup='cat /dev/null > log/test.log && cat /dev/null > log/development.log && cat /dev/null > log/newrelic_agent.log && rm -rf tmp/cache/*'
 #alias goodcode='git diff origin/master --name-only | xargs bundle exec rubocop -a'
 #alias goodcode'git ls-files -m --full-name | xargs ls -1 2>/dev/null | grep '\.rb$' | xargs bundle exec rubocop -A'
@@ -100,8 +88,9 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 # Ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+eval "$(rbenv init - --no-rehash)"
 export RUBOCOP_DAEMON_USE_BUNDLER=true
+[ -f ~/.ruby.zsh ] && source ~/.ruby.zsh
 
 # Yarn
 export PATH="$HOME/.yarn/bin:$PATH"
@@ -113,6 +102,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_CTRL_T_OPTS='--height 70% --preview "bat --style=numbers --color=always {}"'
 
 # asdf tool versioning
+autoload -U +X bashcompinit && bashcompinit
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
 
@@ -130,14 +120,17 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 export PATH=~/Library/Python/2.7/bin:$PATH
 export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+
 if [[ -z "$VIRTUAL_ENV" ]]; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
 fi
 
 if [ -z "$PYENV_INITIALIZED" ]; then
-   eval "$(pyenv init -)"
-   export PYENV_INITIALIZED=1
+  eval "$(pyenv init -)"
+  export PYENV_INITIALIZED=1
 fi
 
 # Functions
@@ -157,10 +150,28 @@ function goodcode {
   git add -N . && bundle exec rubocop -A $({ git diff HEAD --name-only --diff-filter=AMC & git diff origin/master..HEAD --name-only --diff-filter=AMC; } | sort | uniq | grep "\.rb$" | tr '\n' ' ')
 }
 
+function circleToken() {
+  yq eval '.token' "$HOME/.circleci/cli.yml"
+}
+
+function circleURL() {
+  git remote get-url origin | sed -e 's/git@//g' | sed -e 's/\.com//g' | sed -e 's/:/\//g' | sed -e 's/\.git//g'
+}
+
 function retry_circle_build() {
-  local circleURL="$(git remote get-url origin | sed -e 's/git@//g' | sed -e 's/\.com//g' | sed -e 's/:/\//g' | sed -e 's/\.git//g')"
-  local circleToken="$(yq r "$HOME/.circleci/cli.yml" 'token')"
-  curl -X POST "https://circleci.com/api/v1.1/project/${circleURL}/$1/retry?circle-token=${circleToken}"
+  curl -X POST "https://circleci.com/api/v1.1/project/$(circleURL)/$1/retry?circle-token=$(circleToken)" | jq '.status, .build_url' -r
+}
+
+function download_circle_artifacts() {
+  curl -X GET "https://circleci.com/api/v1.1/project/$(circleURL)/$1/artifacts?circle-token=$(circleToken)"
+}
+
+function fetch_failures() {
+  curl -X GET "https://circleci.com/api/v1.1/project/$(circleURL)/$1/tests?circle-token=$(circleToken)" | jq '.tests[] | select(.result=="failure") | .file' -r
+}
+
+function approve_merge() {
+  gh pr review --approve $1 && gh pr merge -m $1 --auto
 }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -168,3 +179,11 @@ function retry_circle_build() {
 
 # Work
 [ -f ~/.work.zsh ] && source ~/.work.zsh
+
+
+export DOCKER_BUILDKIT=1
+export GPG_TTY=$(tty)
+export PATH="/usr/local/opt/openjdk/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+export PATH="/usr/local/opt/libpq/bin:$PATH"
