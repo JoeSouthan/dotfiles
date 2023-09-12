@@ -4,4 +4,4 @@ eval "$(rbenv init -)"
 
 export PATH="$HOME/.yarn/bin:$PATH"
 
-export PATH="$HOME/.cargo/bin:$PATH"
+source "$HOME/.cargo/env"

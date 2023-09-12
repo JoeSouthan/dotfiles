@@ -14,6 +14,7 @@
     ~/.gemrc: gemrc
     ~/.gitignore_global: gitignore_global
     ~/.p10k.zsh: .p10k.zsh
+    ~/.fzf.zsh: ~/.fzf.zsh
 
 - brew:
     - libxml2
@@ -38,6 +39,9 @@
     - osxfuse
     - docker
     - flux
+    - 1password-cli
+    - clipy
+    - google-cloud-sdk
 
 - shell:
     - ["git submodule update --init --recursive", "Updating submodules"]
@@ -48,4 +52,9 @@
     - [
         "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10",
         "installing p10k",
+      ]
+    - ["git clone https://github.com/rbenv/rbenv.git ~/.rbenv", "Install rbenv"]
+    - [
+        'git -C "$(rbenv root)"/plugins/ruby-build pull',
+        "Installing ruby-build",
       ]

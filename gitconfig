@@ -7,8 +7,8 @@
 	email = joseph@southanuk.co.uk
 	signingkey = 49EDC150D29C9763
 [core]
-	editor = nano
-	excludesfile = /Users/josephsouthan/.gitignore_global
+	editor = vim
+	excludesfile = /Users/joesouthan/.gitignore_global
 [filter "hawser"]
 	clean = git hawser clean %f
 	smudge = git hawser smudge %f
@@ -26,12 +26,10 @@
 	autocorrect = 1
 [credential]
 	helper = osxkeychain
-[filter "lfs"]
-	clean = git lfs clean %f
-	smudge = git lfs smudge %f
-	required = true
-[commit]
-	gpgsign = true
+#[filter "lfs"]
+#	clean = git lfs clean %f
+#	smudge = git lfs smudge %f
+#	required = true
 [difftool]
 	prompt = false
 [mergetool]
@@ -43,3 +41,12 @@
 	prune = true
 [pull]
 	rebase = false
+[commit]
+	gpgsign = true
+[gpg]
+	program = gpg
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

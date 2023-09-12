@@ -39,11 +39,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+else
+   export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -74,14 +74,15 @@ esac
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias gs='git status'
-alias deletemerged='git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d'
+#alias deletemerged='git branch --merged | egrep -v "(^\*|master|main|dev)" | xargs git branch -d'
 alias tidyup='cat /dev/null > log/test.log && cat /dev/null > log/development.log && cat /dev/null > log/newrelic_agent.log && rm -rf tmp/cache/*'
 #alias goodcode='git diff origin/master --name-only | xargs bundle exec rubocop -a'
 #alias goodcode'git ls-files -m --full-name | xargs ls -1 2>/dev/null | grep '\.rb$' | xargs bundle exec rubocop -A'
 # alias goodcode='bundle exec rubocop -a $(g diff --name-only --diff-filter=M)'
 alias wantmaster='git checkout master && git pull origin master'
 alias empty='find . -type d -empty -delete'
-alias _yaml2js="python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)'"
+alias cat=bat
+alias vim=nvim
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
@@ -100,6 +101,7 @@ export PATH="$HOME/.yarn/bin:$PATH"
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_CTRL_T_OPTS='--height 70% --preview "bat --style=numbers --color=always {}"'
+export FZF_ALT_C_OPTS="--preview 'tree -L 2 -C {} | head -200'"
 
 # asdf tool versioning
 autoload -U +X bashcompinit && bashcompinit
@@ -136,7 +138,7 @@ fi
 # Functions
 function yaml2js {
   if [ -n "$1" ]; then
-    cat $1 | _yaml2js
+    yq -j eval $1
   else
     echo "File please"
   fi
@@ -174,6 +176,14 @@ function approve_merge() {
   gh pr review --approve $1 && gh pr merge -m $1 --auto
 }
 
+function ggh() {
+  git checkout $(git for-each-ref refs/heads/ --format='%(refname:short)' | fzf)
+}
+
+function deletemerged() {
+  git fetch -p && for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}'); do git branch -D $branch; done
+}
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -187,3 +197,14 @@ export PATH="/usr/local/opt/openjdk/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
+export GO111MODULE=on
+eval "$(op completion zsh)"; compdef _op op
+#source /Users/joesouthan/.config/op/plugins.sh
+
+# pnpm
+export PNPM_HOME="/Users/joesouthan/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
